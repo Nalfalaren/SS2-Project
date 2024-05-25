@@ -1,0 +1,19 @@
+{
+  "name": "writing-assistant",
+  "version": "1.0.0",
+  "description": "writing assistant",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "quanghuong",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "mysql2": "^3.9.4",
+    "sequelize": "^6.37.2"
+  }
+}
