@@ -1,5 +1,6 @@
 'use strict';
 
+const SQLRepo = require('../Repository');
 const OpenAIService = require('../services/openai.service');
 const {
     OPENAI_CHECK_GRAMMAR_SUCCESS,
@@ -20,12 +21,24 @@ class AssistantController {
             });
         }
 
+        const output = await OpenAIService.checkGrammar({
+            text: req.body.text,
+        });
+
+        await SQLRepo.createOne({
+            props: {
+                user_id: req.clientID,
+                inputText: req.body.text,
+                outputText: JSON.stringify([output.fixedText]),
+                type: 'grammar-checking',
+            },
+            modelName: 'History',
+        });
+
         res.status(200).json({
             status: 200,
             code: OPENAI_CHECK_GRAMMAR_SUCCESS,
-            body: await OpenAIService.checkGrammar({
-                text: req.body.text,
-            }),
+            body: output,
             message:
                 'Grammar checker has been correct the text input successfully',
         });
@@ -42,12 +55,24 @@ class AssistantController {
             });
         }
 
+        const output = await OpenAIService.textCompletion({
+            text: req.body.text,
+        });
+
+        await SQLRepo.createOne({
+            props: {
+                user_id: req.clientID,
+                inputText: output.text,
+                outputText: JSON.stringify(output.versions),
+                type: 'text-completion',
+            },
+            modelName: 'History',
+        });
+
         res.status(200).json({
             status: 200,
             code: OPENAI_TEXT_COMPLETION_SUCCESS,
-            body: await OpenAIService.textCompletion({
-                text: req.body.text,
-            }),
+            body: output,
             message: 'Has been completed successfully',
         });
     }
@@ -68,13 +93,25 @@ class AssistantController {
             });
         }
 
+        const output = await OpenAIService.paraphrase({
+            form: req.body.form,
+            text: req.body.text,
+        });
+
+        await SQLRepo.createOne({
+            props: {
+                user_id: req.clientID,
+                inputText: output.text,
+                outputText: JSON.stringify(output.versions),
+                type: 'paraphrase',
+            },
+            modelName: 'History',
+        });
+
         res.status(200).json({
             status: 200,
             code: OPENAI_PARAPHRASE_SUCCESS,
-            body: await OpenAIService.paraphrase({
-                form: req.body.form,
-                text: req.body.text,
-            }),
+            body: output,
             message: 'The input text has been paraphrased successfully',
         });
     }

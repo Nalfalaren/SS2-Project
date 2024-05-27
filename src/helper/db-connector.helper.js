@@ -94,7 +94,7 @@ class DBConnector {
         }
         new DBConnector();
         DBConnector.connect();
-        // DBConnector.initTables();
+        DBConnector.initTables();
 
         return DBConnector.instance;
     }

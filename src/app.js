@@ -7,11 +7,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* Connect to the database */
-// const DBConnector = require('./helper/db-connector.helper');
-// const connector = DBConnector.getConnector();
-// require('./model/User.model');
-// require('./model/Token.model');
-// require('./model/Oauth.model');
+const DBConnector = require('./helper/db-connector.helper');
+DBConnector.getConnector();
+require('./model/User.model');
+require('./model/Token.model');
+require('./model/Oauth.model');
+require('./model/History.model');
 
 /* Init routers */
 const initRoutes = require('./routes');

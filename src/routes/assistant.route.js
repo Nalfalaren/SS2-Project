@@ -4,14 +4,6 @@ const assistantRouter = express.Router();
 const errorCacther = require('../utils/error-catcher');
 const AssistantController = require('../controllers/assistant.controller');
 
-// const {
-//     verifyAuthV1,
-// } = require('../middlewares/verify-auth.middlewar');
-// const checkOauth = require('../middlewares/check-oauth.middleware');
-
-// assistantRouter.use(errorCacther(verifyAuthV1));
-// assistantRouter.use(errorCacther(checkOauth));
-
 assistantRouter.get(
     '/test',
     errorCacther((req, res, next) => {

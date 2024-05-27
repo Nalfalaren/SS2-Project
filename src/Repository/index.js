@@ -2,11 +2,13 @@
 const UserModel = require('../model/User.model');
 const TokenModel = require('../model/Token.model');
 const OauthModel = require('../model/Oauth.model');
+const HistoryModel = require('../model/History.model');
 
 const MODELS = {
     USER: UserModel,
     TOKEN: TokenModel,
     OAUTH: OauthModel,
+    HISTORY: HistoryModel,
 };
 
 class SQLRepo {
@@ -33,10 +35,27 @@ class SQLRepo {
         }
     }
 
+    static async createOne({ props, modelName }) {
+        const Model = MODELS[modelName.toUpperCase()];
+        try {
+            return await Model.create(props);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     static async findOne({ where, modelName }) {
         const Model = MODELS[modelName.toUpperCase()];
 
         return await Model.findOne({
+            where,
+        });
+    }
+
+    static async findAll({ where, modelName }) {
+        const Model = MODELS[modelName.toUpperCase()];
+
+        return await Model.findAll({
             where,
         });
     }
