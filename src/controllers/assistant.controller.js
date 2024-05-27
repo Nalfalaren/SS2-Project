@@ -12,9 +12,9 @@ const ErrorResponse = require('../utils/error.response');
 class AssistantController {
     /* Grammar checker */
     static async grammarChecker(req, res, next) {
-        if (!req.body?.paragraph) {
+        if (!req.body?.text) {
             throw new ErrorResponse({
-                message: 'Please provide the paragraph to check',
+                message: 'Please provide the text input to check',
                 status: 403,
                 code: CHECK_GRAMMER_MISS_PARAGRAPH,
             });
@@ -24,10 +24,10 @@ class AssistantController {
             status: 200,
             code: OPENAI_CHECK_GRAMMAR_SUCCESS,
             body: await OpenAIService.checkGrammar({
-                paragraph: req.body.paragraph,
+                text: req.body.text,
             }),
             message:
-                'Grammar checker has been correct the paragraph successfully',
+                'Grammar checker has been correct the text input successfully',
         });
     }
 
@@ -36,10 +36,9 @@ class AssistantController {
 
     /* Text completion */
     static async textCompletion(req, res, next) {
-        if (!req.body.type) {
+        if (!req.body.text) {
             throw new ErrorResponse({
-                message:
-                    'Provide text type (paragraph or sentence) to complete',
+                message: 'Provide text to complete',
             });
         }
 
@@ -47,7 +46,6 @@ class AssistantController {
             status: 200,
             code: OPENAI_TEXT_COMPLETION_SUCCESS,
             body: await OpenAIService.textCompletion({
-                inputFormat: req.body.type,
                 text: req.body.text,
             }),
             message: 'Has been completed successfully',
@@ -62,9 +60,9 @@ class AssistantController {
             });
         }
 
-        if (!req.body?.paragraph) {
+        if (!req.body?.text) {
             throw new ErrorResponse({
-                message: 'Please provide the paragraph to check',
+                message: 'Please provide the input text to check',
                 status: 403,
                 code: CHECK_GRAMMER_MISS_PARAGRAPH,
             });
@@ -75,9 +73,9 @@ class AssistantController {
             code: OPENAI_PARAPHRASE_SUCCESS,
             body: await OpenAIService.paraphrase({
                 form: req.body.form,
-                paragraph: req.body.paragraph,
+                text: req.body.text,
             }),
-            message: 'The paragraph has been paraphrased successfully',
+            message: 'The input text has been paraphrased successfully',
         });
     }
 }

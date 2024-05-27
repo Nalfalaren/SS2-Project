@@ -7,8 +7,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* Connect to the database */
-const DBConnector = require('./helper/db-connector.helper');
-const connector = DBConnector.getConnector();
+// const DBConnector = require('./helper/db-connector.helper');
+// const connector = DBConnector.getConnector();
 // require('./model/User.model');
 // require('./model/Token.model');
 // require('./model/Oauth.model');

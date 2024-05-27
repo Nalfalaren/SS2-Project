@@ -10,7 +10,8 @@ const isExpired = ({ expireIn }) => {
 };
 
 const formatGrammarCheckingResult = ({ result }) => {
-    let para = result.paragraph;
+    console.log(result);
+    let para = result.originalText;
     const errors = result.errors;
 
     /**
@@ -21,10 +22,7 @@ const formatGrammarCheckingResult = ({ result }) => {
     let currentPointerIndex = 0;
     for (let i = 0; i < errors.length; i++) {
         const errorWord = errors[i].word;
-        const startPosIndex = para.indexOf(
-            errorWord,
-            currentPointerIndex
-        );
+        const startPosIndex = para.indexOf(errorWord, currentPointerIndex);
         const endPosIndex = startPosIndex + errorWord.length;
 
         formatedErrors.push({
@@ -39,7 +37,8 @@ const formatGrammarCheckingResult = ({ result }) => {
 
     /* Return formatted version of result */
     return {
-        paragraph: result.paragraph,
+        originalText: result.originalText,
+        fixedText: result.fixedText,
         errorWords: formatedErrors,
     };
 };

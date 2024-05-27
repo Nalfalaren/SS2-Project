@@ -1,6 +1,6 @@
 const server = require('./src/app');
 require('dotenv').config();
-const DBConnector = require('./src/helper/db-connector.helper');
+// const DBConnector = require('./src/helper/db-connector.helper');
 
 /* Error route */
 
@@ -14,7 +14,7 @@ server.listen(process.env.SERVER_PORT, () => {
 /* Close the server */
 process.on('SIGINT', async () => {
     /* Close the database connector */
-    await DBConnector.close();
+    // await DBConnector.close();
 
     /* Close the server */
     console.log(

@@ -9,9 +9,7 @@ class DBConnector {
     static instance = null;
     constructor() {
         if (DBConnector.instance) {
-            throw new Error(
-                'Only one sequilize instance allowed'
-            );
+            throw new Error('Only one sequilize instance allowed');
         }
 
         /* Create instance */
@@ -94,7 +92,6 @@ class DBConnector {
         if (DBConnector.instance) {
             return DBConnector.instance;
         }
-        console.log('create connector::');
         new DBConnector();
         DBConnector.connect();
         // DBConnector.initTables();

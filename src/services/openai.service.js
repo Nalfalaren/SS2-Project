@@ -11,13 +11,17 @@ const FUNCTION_CALLING = {
     GRAMMAR_CHECKER: {
         name: 'correct_english_grammar',
         description:
-            'Correct English grammar errors based on the provided paragraph',
+            'Correct English grammar or spelling errors based on the provided text input',
         parameters: {
             type: 'object',
             properties: {
-                paragraph: {
+                originalText: {
                     type: 'string',
-                    description: 'The provided paragraph',
+                    description: 'The provided text input',
+                },
+                fixedText: {
+                    type: 'string',
+                    description: 'The corrected version of text input',
                 },
                 errors: {
                     type: 'array',
@@ -39,29 +43,29 @@ const FUNCTION_CALLING = {
                     },
                 },
             },
-            required: ['errors'],
+            required: ['originalText', 'fixedText', 'errors'],
         },
     },
 
-    TEXT_COMPLETION_BY_SENTENCE: {
+    TEXT_COMPLETION: {
         name: 'text_completion',
         description:
-            'Given an English sentence as input, You are tasked with completing the text based on the context provided in that sentence.',
+            'Given an English input text, You are tasked with completing the input text with generated sentences.',
         parameters: {
             type: 'object',
             properties: {
-                sentence: {
+                text: {
                     type: 'string',
-                    description: 'The provided sentence',
+                    description: 'The provided text input',
                 },
-                completions: {
+                versions: {
                     type: 'array',
                     description:
-                        'An array of suggested replacements for the sentence. The length of array should be greater than 3',
+                        'An array of suggested completions for the text input. There must have 3 completion versions at least',
                     items: {
                         type: 'string',
                         description:
-                            'The suggested replacement for the sentence. The replacement should be at least 18 words',
+                            'The suggested completion for the text input. The completion should be at least 18 words',
                     },
                 },
             },
@@ -69,25 +73,25 @@ const FUNCTION_CALLING = {
         },
     },
 
-    TEXT_COMPLETION_BY_PARAGRAPH: {
-        name: 'text_completion',
+    PARAPHRASE: {
+        name: 'paraphrase',
         description:
-            'Given an English paragraph as input, You are tasked with completing the text based on the context provided in that paragraph.',
+            'Given an English input text, You are tasked with providing several paraphrased versions of the input text.',
         parameters: {
             type: 'object',
             properties: {
-                paragraph: {
+                text: {
                     type: 'string',
-                    description: 'The provided paragraph',
+                    description: 'The provided text input',
                 },
-                completions: {
+                versions: {
                     type: 'array',
                     description:
-                        'An array of suggested replacements for the paragraph. The length of array should be greater than 3',
+                        'An array of paraphrased versions for the text input. The length of array should be greater than 3',
                     items: {
                         type: 'string',
                         description:
-                            'The suggested replacement for the paragraph. The replacement should be at least 18 words',
+                            'The paraphrased versiont for the text input.',
                     },
                 },
             },
@@ -99,12 +103,12 @@ const FUNCTION_CALLING = {
 const openAI = require('../config')('DEV').openai;
 
 class OpenAIService {
-    static async checkGrammar({ paragraph }) {
+    static async checkGrammar({ text }) {
         /* Promt */
         const messages = [
             {
                 role: 'user',
-                content: `The provided paragraph: "${paragraph}"`,
+                content: `The provided text input: "${text}"`,
             },
         ];
 
@@ -159,22 +163,28 @@ class OpenAIService {
             AIResponse.message.tool_calls[0].function.arguments;
 
         /* Format reuslt and return */
-        return formatGrammarCheckingResult({
-            result: JSON.parse(checkingResult),
-        });
+        return JSON.parse(checkingResult);
     }
 
-    static async paraphrase({ form = 'shorten', paragraph }) {
+    static async paraphrase({ form = 'shorten', text }) {
         const len = form === 'shorten' ? 'shorter' : 'longer';
         /* Promt */
         const messages = [
             {
                 role: 'system',
-                content: `You will receive an English paragraph, and your task is to rewrite this paragraph, ensuring that the rewritten version is ${len} than the original.`,
+                content: `Given an English input text, You are tasked with providing several paraphrased versions of the input text, ensuring that the paraphrased version is ${len} than the original.`,
             },
             {
                 role: 'user',
-                content: paragraph,
+                content: text,
+            },
+        ];
+
+        /* Function calling  */
+        const FunctionCalling = [
+            {
+                type: 'function',
+                function: FUNCTION_CALLING.PARAPHRASE,
             },
         ];
 
@@ -182,8 +192,9 @@ class OpenAIService {
         const requestConfiguration = {
             model: 'gpt-3.5-turbo',
             messages: messages,
+            tools: [...FunctionCalling],
+            tool_choice: 'auto',
             temperature: 0.7,
-            max_tokens: 500,
         };
 
         /* Send request */
@@ -212,16 +223,18 @@ class OpenAIService {
             throw new ErrorResponse();
         }
 
-        const paraphrasedPara = data.choices[0].message.content;
-        return paraphrasedPara;
+        const AIResponse = data.choices[0];
+        const result = AIResponse.message.tool_calls[0].function.arguments;
+
+        return JSON.parse(result);
     }
 
-    static async textCompletion({ text, inputFormat }) {
+    static async textCompletion({ text }) {
         /* Promt */
         const messages = [
             {
                 role: 'user',
-                content: `The provided ${inputFormat}: "${text}"`,
+                content: `The provided input text: "${text}"`,
             },
         ];
 
@@ -229,10 +242,7 @@ class OpenAIService {
         const FunctionCalling = [
             {
                 type: 'function',
-                function:
-                    inputFormat === 'paragraph'
-                        ? FUNCTION_CALLING.TEXT_COMPLETION_BY_PARAGRAPH
-                        : TEXT_COMPLETION_BY_SENTENCE,
+                function: FUNCTION_CALLING.TEXT_COMPLETION,
             },
         ];
 
