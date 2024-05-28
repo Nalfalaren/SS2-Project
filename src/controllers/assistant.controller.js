@@ -4,9 +4,10 @@ const OpenAIService = require('../services/openai.service');
 const GoogleService = require('../services/google.service');
 const {
     OPENAI_CHECK_GRAMMAR_SUCCESS,
-    CHECK_GRAMMER_MISS_PARAGRAPH,
+    MISS_PARAGRAPH,
     OPENAI_PARAPHRASE_SUCCESS,
     OPENAI_TEXT_COMPLETION_SUCCESS,
+    CHECK_PLAGIARISM_SUCCESS,
 } = require('../utils/code');
 const ErrorResponse = require('../utils/error.response');
 const axios = require('axios');
@@ -19,7 +20,7 @@ class AssistantController {
             throw new ErrorResponse({
                 message: 'Please provide the text input to check',
                 status: 403,
-                code: CHECK_GRAMMER_MISS_PARAGRAPH,
+                code: MISS_PARAGRAPH,
             });
         }
 
@@ -48,6 +49,15 @@ class AssistantController {
 
     /* Plagiarism Checker */
     static async plagiarismChecker(req, res, next) {
+        if (!req.body?.text) {
+            throw new ErrorResponse({
+                message: 'Please provide the text input to check',
+                status: 403,
+                code: MISS_PARAGRAPH,
+            });
+        }
+
+        /*Check plagiarism */
         const output = [];
 
         /* Google search with query */
@@ -79,14 +89,21 @@ class AssistantController {
             }
         }
 
-        return res.json(output);
+        res.status(200).json({
+            status: 200,
+            code: CHECK_PLAGIARISM_SUCCESS,
+            body: output,
+            message: 'Check plagiarism successfully',
+        });
     }
 
     /* Text completion */
     static async textCompletion(req, res, next) {
-        if (!req.body.text) {
+        if (!req.body?.text) {
             throw new ErrorResponse({
-                message: 'Provide text to complete',
+                message: 'Please provide the text input to check',
+                status: 403,
+                code: MISS_PARAGRAPH,
             });
         }
 
@@ -124,7 +141,7 @@ class AssistantController {
             throw new ErrorResponse({
                 message: 'Please provide the input text to check',
                 status: 403,
-                code: CHECK_GRAMMER_MISS_PARAGRAPH,
+                code: MISS_PARAGRAPH,
             });
         }
 
