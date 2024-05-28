@@ -1,4 +1,7 @@
 'use strict';
+const stringSimilarity = require('string-similarity');
+const puppeteer = require('puppeteer');
+
 const JWTDecode = require('jwt-decode');
 
 const decodeJWT = ({ token }) => {
@@ -9,42 +12,33 @@ const isExpired = ({ expireIn }) => {
     return expireIn - Math.floor(Date.now() / 1000) <= 0;
 };
 
-const formatGrammarCheckingResult = ({ result }) => {
-    console.log(result);
-    let para = result.originalText;
-    const errors = result.errors;
+const extractTextFromHtml = async ({ url }) => {
+    const browser = await puppeteer.launch({
+        headless: true,
+    });
+    const page = (await browser.pages())[0];
+    await page.goto(url);
+    const extractedText = await page.$eval('*', (el) => el.innerText);
 
-    /**
-     * Mark startIndex + endIndex of error word
-     *      in the paragraph
-     */
-    const formatedErrors = [];
-    let currentPointerIndex = 0;
-    for (let i = 0; i < errors.length; i++) {
-        const errorWord = errors[i].word;
-        const startPosIndex = para.indexOf(errorWord, currentPointerIndex);
-        const endPosIndex = startPosIndex + errorWord.length;
+    await browser.close();
 
-        formatedErrors.push({
-            errorWord,
-            startPosIndex,
-            endPosIndex,
-            suggestion: errors[i].suggestion,
-        });
+    return extractedText;
+};
 
-        currentPointerIndex = endPosIndex + 1;
-    }
+const getSimilarity = ({ firstText, secondText }) => {
+    const similarity = stringSimilarity.compareTwoStrings(
+        firstText,
+        secondText
+    );
 
-    /* Return formatted version of result */
-    return {
-        originalText: result.originalText,
-        fixedText: result.fixedText,
-        errorWords: formatedErrors,
-    };
+    console.log('simi::', similarity);
+
+    return similarity * 100;
 };
 
 module.exports = {
     decodeJWT,
     isExpired,
-    formatGrammarCheckingResult,
+    extractTextFromHtml,
+    getSimilarity,
 };

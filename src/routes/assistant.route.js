@@ -26,4 +26,9 @@ assistantRouter.post(
     errorCacther(AssistantController.textCompletion)
 );
 
+assistantRouter.post(
+    '/plagiarism-checker',
+    AssistantController.plagiarismChecker
+);
+
 module.exports = assistantRouter;

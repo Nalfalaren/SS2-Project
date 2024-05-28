@@ -22,6 +22,11 @@ const DEVELOPMENT = {
     openai: {
         apiKey: process.env.DEV_OPEN_AI_KEY,
     },
+
+    google: {
+        searchKey: process.env.DEV_GOOGLE_SEARCH_API_KEY,
+        searchCx: process.env.DEV_GOOGLE_SEARCH_CX,
+    },
 };
 
 /* PRO ENV */

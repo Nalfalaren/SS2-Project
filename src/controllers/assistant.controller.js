@@ -1,7 +1,7 @@
 'use strict';
-
 const SQLRepo = require('../Repository');
 const OpenAIService = require('../services/openai.service');
+const GoogleService = require('../services/google.service');
 const {
     OPENAI_CHECK_GRAMMAR_SUCCESS,
     CHECK_GRAMMER_MISS_PARAGRAPH,
@@ -9,6 +9,8 @@ const {
     OPENAI_TEXT_COMPLETION_SUCCESS,
 } = require('../utils/code');
 const ErrorResponse = require('../utils/error.response');
+const axios = require('axios');
+const { extractTextFromHtml, getSimilarity } = require('../utils');
 
 class AssistantController {
     /* Grammar checker */
@@ -45,7 +47,40 @@ class AssistantController {
     }
 
     /* Plagiarism Checker */
-    static async plagiarismChecker(req, res, next) {}
+    static async plagiarismChecker(req, res, next) {
+        const output = [];
+
+        /* Google search with query */
+        const results = await GoogleService.search({
+            query: req.body.text,
+        });
+
+        const length = results.length >= 3 ? 3 : results.length;
+
+        for (let i = 0; i < length; i++) {
+            const url = results[i].link;
+            console.log(url);
+            /* Get html from webpage and extract only text*/
+            const extractedText = await extractTextFromHtml({
+                url,
+            });
+
+            /* Get similary */
+            const similarity = getSimilarity({
+                firstText: req.body.text,
+                secondText: extractedText,
+            });
+
+            if (similarity != 0) {
+                output.push({
+                    similarity,
+                    link: url,
+                });
+            }
+        }
+
+        return res.json(output);
+    }
 
     /* Text completion */
     static async textCompletion(req, res, next) {

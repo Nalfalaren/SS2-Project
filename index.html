@@ -8,10 +8,25 @@
 </head>
 
 <body>
-    <button data-login>Login with google</button>
+    <!-- <button data-login>Login with google</button> -->
+    <button data-search>Search</button>
 </body>
 
 <script>
+    document.querySelector('[data-search]').onclick = () => {
+        const key = "AIzaSyBWfj57KWm6XnhWHj8S1bDIqu5TZZ7b8SU";
+        const cx = "51833c5a1053f421f";
+        const query = `The Department of Health Policy and Management (HPM) offers a Master of Health Administration (MHA) degree program in full-time, part-time, and executive formats. These cohort-based programs integrate coursework in organizational leadership and management, health policy, and public health and health systems. Students take traditional management coursework in the context of the healthcare system and learn advanced skills in finance, strategy, leadership and analytics. Each course contains healthcare examples and case studies, and faculty discuss the healthcare environment, language and policies in class.`
+        const url = `https://www.googleapis.com/customsearch/v1?key=AIzaSyBWfj57KWm6XnhWHj8S1bDIqu5TZZ7b8SU&cx=51833c5a1053f421f&q=${query}&callback=hndlr`
+
+        fetch(url, { method: 'GET' }).then(res => {
+            console.log(res.json())
+        })
+    }
+
+</script>
+
+<!-- <script>
     /* Params */
     const params = {
         client_id: '405525693953-nev7rod0qb4bp0f4jifhgaeonf7cr6m3.apps.googleusercontent.com',
@@ -35,6 +50,6 @@
         console.log(url)
         location.assign(url)
     }
-</script>
+</script> -->
 
 </html>
