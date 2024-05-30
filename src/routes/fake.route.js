@@ -119,11 +119,11 @@ fakeRouter.post('/paraphrase', async (req, res, next) => {
 });
 
 fakeRouter.post('/text-completion', async (req, res, next) => {
-    if (!req.body.text) {
-        throw new ErrorResponse({
-            message: 'Provide text to complete',
-        });
-    }
+    // if (!req.body.text) {
+    //     throw new ErrorResponse({
+    //         message: 'Provide text to complete',
+    //     });
+    // }
 
     await SQLRepo.createOne({
         props: {

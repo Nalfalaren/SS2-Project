@@ -20,6 +20,7 @@ const verifyAuthV1 = async (req, res, next) => {
     const cookies = req.cookies;
     const clientID = cookies['user-id'];
     const accessToken = cookies['access-token'];
+    console.log(req.cookies);
 
     /**
      * Verify client id
@@ -60,7 +61,7 @@ const verifyAuthV1 = async (req, res, next) => {
     /* Verify token with public key */
     const decodedPayload = await JWTService.verifyToken({
         key: tokenObject.public_key,
-        token: accessToken.split(' ')[1],
+        token: accessToken,
     });
 
     /* Attach to res object */
@@ -113,7 +114,7 @@ const verifyAuthV2 = async (req, res, next) => {
     /* Verify token with public key */
     const decodedPayload = await JWTService.verifyToken({
         key: tokenObject.private_key,
-        token: refreshToken.split(' ')[1],
+        token: refreshToken,
     });
 
     /* Attach to res object */
