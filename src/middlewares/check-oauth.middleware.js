@@ -5,7 +5,6 @@ const OAuthService = require('../services/oauth.service');
 const { isExpired } = require('../utils');
 
 const checkOauth = async (req, res, next) => {
-    console.log('checkauth middleware::');
     if (req.auth !== 'oauth') {
         next();
     }

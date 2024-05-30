@@ -17,9 +17,9 @@ const HTTP_HEADERS = {
     CLINET_ID: 'x-client-id',
 };
 const verifyAuthV1 = async (req, res, next) => {
-    const headers = req.headers;
-    const clientID = headers[HTTP_HEADERS.CLINET_ID];
-    const accessToken = headers[HTTP_HEADERS.ACCESS_TOKEN];
+    const cookies = req.cookies;
+    const clientID = cookies['user-id'];
+    const accessToken = cookies['access-token'];
 
     /**
      * Verify client id
@@ -65,16 +65,14 @@ const verifyAuthV1 = async (req, res, next) => {
 
     /* Attach to res object */
     req.clientID = clientID;
-    req.auth = decodedPayload?.auth
-        ? decodedPayload.auth
-        : 'normal';
+    req.auth = decodedPayload?.auth ? decodedPayload.auth : 'normal';
     next();
 };
 
 const verifyAuthV2 = async (req, res, next) => {
-    const headers = req.headers;
-    const clientID = headers[HTTP_HEADERS.CLINET_ID];
-    const refreshToken = headers[HTTP_HEADERS.REFRESH_TOKEN];
+    const cookies = req.cookies;
+    const clientID = cookies['user-id'];
+    const refreshToken = cookies['refresh-token'];
 
     /**
      * Verify client id
@@ -120,9 +118,7 @@ const verifyAuthV2 = async (req, res, next) => {
 
     /* Attach to res object */
     req.clientID = clientID;
-    req.auth = decodedPayload?.auth
-        ? decodedPayload.auth
-        : 'normal';
+    req.auth = decodedPayload?.auth ? decodedPayload.auth : 'normal';
     next();
 };
 

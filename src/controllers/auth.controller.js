@@ -9,23 +9,20 @@ const ErrorResponse = require('../utils/error.response');
 
 class AuthController {
     static async SignInByOauth(req, res, next) {
-        if (!req.query.code) {
-            throw new ErrorResponse({
-                message: 'Not provide the authrization code',
-                code: OAUTH_MISS_AUTH_CODE,
-                status: 400,
-            });
+        if (req.query?.error || !req.query?.code) {
+            return res.redirect('http://localhost:6868/login');
         }
 
-        const body = await AuthService.SignInByOauth({
-            oauthCode: req.query.code,
-        });
+        const { accessToken, refreshToken, user } =
+            await AuthService.SignInByOauth({
+                oauthCode: req.query.code,
+            });
 
-        res.status(200).json({
-            code: OAUTH_SIGN_IN_OK,
-            status: 200,
-            body,
-        });
+        res.cookie('access-token', accessToken);
+        res.cookie('refresh-token', refreshToken);
+        res.cookie('user-id', user.id);
+
+        res.redirect('http://localhost:6868/home');
     }
 }
 

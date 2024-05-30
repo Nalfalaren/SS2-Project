@@ -1,10 +1,12 @@
 'use strict';
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 /* Parser */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 /* Connect to the database */
 const DBConnector = require('./helper/db-connector.helper');

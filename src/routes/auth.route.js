@@ -4,7 +4,7 @@ const authRouter = express.Router();
 const AuthController = require('../controllers/auth.controller');
 const errorCacther = require('../utils/error-catcher');
 
-authRouter.post(
+authRouter.get(
     '/oauth/sign-in',
     errorCacther(AuthController.SignInByOauth)
 );
