@@ -28,16 +28,6 @@ class AssistantController {
             text: req.body.text,
         });
 
-        await SQLRepo.createOne({
-            props: {
-                user_id: req.clientID,
-                inputText: req.body.text,
-                outputText: JSON.stringify([output.fixedText]),
-                type: 'grammar-checking',
-            },
-            modelName: 'History',
-        });
-
         res.status(200).json({
             status: 200,
             code: OPENAI_CHECK_GRAMMAR_SUCCESS,
@@ -65,7 +55,7 @@ class AssistantController {
             query: req.body.text,
         });
 
-        const length = results.length >= 3 ? 3 : results.length;
+        const length = results.length >= 2 ? 2 : results.length;
 
         for (let i = 0; i < length; i++) {
             const url = results[i].link;
@@ -111,16 +101,6 @@ class AssistantController {
             text: req.body.text,
         });
 
-        await SQLRepo.createOne({
-            props: {
-                user_id: req.clientID,
-                inputText: output.text,
-                outputText: JSON.stringify(output.versions),
-                type: 'text-completion',
-            },
-            modelName: 'History',
-        });
-
         res.status(200).json({
             status: 200,
             code: OPENAI_TEXT_COMPLETION_SUCCESS,
@@ -150,21 +130,40 @@ class AssistantController {
             text: req.body.text,
         });
 
+        res.status(200).json({
+            status: 200,
+            code: OPENAI_PARAPHRASE_SUCCESS,
+            body: output,
+            message: 'The input text has been paraphrased successfully',
+        });
+    }
+
+    /* Save */
+    static async save(req, res, next) {
+        if (!req.body?.input || !req.body?.output || !req.body?.type) {
+            throw new ErrorResponse({
+                message:
+                    'Please provide enough body (input, output, type)',
+                status: 403,
+                code: MISS_PARAGRAPH,
+            });
+        }
+        const { input, output, type } = req.body;
+
         await SQLRepo.createOne({
             props: {
                 user_id: req.clientID,
-                inputText: output.text,
-                outputText: JSON.stringify(output.versions),
-                type: 'paraphrase',
+                inputText: input,
+                outputText: output,
+                type: type,
             },
             modelName: 'History',
         });
 
         res.status(200).json({
             status: 200,
-            code: OPENAI_PARAPHRASE_SUCCESS,
-            body: output,
-            message: 'The input text has been paraphrased successfully',
+            code: 200,
+            message: 'Has been saved successfully',
         });
     }
 }

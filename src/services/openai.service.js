@@ -1,10 +1,6 @@
 'use strict';
 
-const { formatGrammarCheckingResult } = require('../utils');
-const {
-    OPENAI_INVALID_API_KEY,
-    OPENAI_OUT_OF_TOKEN,
-} = require('../utils/code');
+const { OPENAI_OUT_OF_TOKEN } = require('../utils/code');
 const ErrorResponse = require('../utils/error.response');
 
 const FUNCTION_CALLING = {

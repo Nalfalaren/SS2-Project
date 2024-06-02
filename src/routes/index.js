@@ -8,10 +8,9 @@ Router.use('/api/auth', require('./auth.route'));
 
 const { verifyAuthV1 } = require('../middlewares/verify-auth.middlewar');
 const checkOauth = require('../middlewares/check-oauth.middleware');
-const errorCacther = require('../utils/error-catcher');
 
-Router.use(errorCacther(verifyAuthV1));
-Router.use(errorCacther(checkOauth));
+// Router.use(errorCacther(verifyAuthV1));
+// Router.use(errorCacther(checkOauth));
 
 Router.use('/api/assistant', require('./assistant.route'));
 Router.use('/api/assistant/fake', require('./fake.route'));

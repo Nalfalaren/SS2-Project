@@ -28,7 +28,9 @@ assistantRouter.post(
 
 assistantRouter.post(
     '/plagiarism-checker',
-    AssistantController.plagiarismChecker
+    errorCacther(AssistantController.plagiarismChecker)
 );
+
+assistantRouter.post('/save', errorCacther(AssistantController.save));
 
 module.exports = assistantRouter;

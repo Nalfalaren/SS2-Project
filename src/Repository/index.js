@@ -14,7 +14,6 @@ const MODELS = {
 class SQLRepo {
     static async updateOrCreate({ props, where, modelName }) {
         const Model = MODELS[modelName.toUpperCase()];
-
         try {
             /* Find the user */
             const existedRecord = await Model.findOne({
@@ -42,6 +41,14 @@ class SQLRepo {
         } catch (error) {
             throw error;
         }
+    }
+
+    static async deleteOne({ where, modelName }) {
+        const Model = MODELS[modelName.toUpperCase()];
+
+        return await Model.destroy({
+            where,
+        });
     }
 
     static async findOne({ where, modelName }) {
