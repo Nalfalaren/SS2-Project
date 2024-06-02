@@ -1,5 +1,5 @@
 'use strict';
-const errorCacther = (func) => async (req, res, next) => {
+const errorCatcher = (func) => async (req, res, next) => {
     try {
         await func(req, res, next);
     } catch (error) {
@@ -7,4 +7,4 @@ const errorCacther = (func) => async (req, res, next) => {
     }
 };
 
-module.exports = errorCacther;
+module.exports = errorCatcher;

@@ -1,36 +1,36 @@
 'use strict';
 const express = require('express');
 const assistantRouter = express.Router();
-const errorCacther = require('../utils/error-catcher');
+const errorCatcher = require('../utils/error-catcher');
 const AssistantController = require('../controllers/assistant.controller');
 
 assistantRouter.get(
     '/test',
-    errorCacther((req, res, next) => {
+    errorCatcher((req, res, next) => {
         res.send('OK Tesing Writing');
     })
 );
 
 assistantRouter.post(
     '/grammar-checker',
-    errorCacther(AssistantController.grammarChecker)
+    errorCatcher(AssistantController.grammarChecker)
 );
 
 assistantRouter.post(
     '/paraphrase',
-    errorCacther(AssistantController.paraphrase)
+    errorCatcher(AssistantController.paraphrase)
 );
 
 assistantRouter.post(
     '/text-completion',
-    errorCacther(AssistantController.textCompletion)
+    errorCatcher(AssistantController.textCompletion)
 );
 
 assistantRouter.post(
     '/plagiarism-checker',
-    errorCacther(AssistantController.plagiarismChecker)
+    errorCatcher(AssistantController.plagiarismChecker)
 );
 
-assistantRouter.post('/save', errorCacther(AssistantController.save));
+assistantRouter.post('/save', errorCatcher(AssistantController.save));
 
 module.exports = assistantRouter;
