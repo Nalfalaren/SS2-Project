@@ -69,10 +69,10 @@ const FUNCTION_CALLING = {
         },
     },
 
-    PARAPHRASE: {
+    PARAPHRASE_NARROW: {
         name: 'paraphrase',
         description:
-            'Given an English input text, You are tasked with providing several paraphrased versions of the input text.',
+            'Given an English input text, You are tasked with providing several paraphrased versions of the input text. The paraphrased version must be half the length of the input text',
         parameters: {
             type: 'object',
             properties: {
@@ -83,7 +83,33 @@ const FUNCTION_CALLING = {
                 versions: {
                     type: 'array',
                     description:
-                        'An array of paraphrased versions for the text input. The length of array should be greater than 3',
+                        'An array of paraphrased versions for the text input. The length of array should be greater than 2',
+                    items: {
+                        type: 'string',
+                        description:
+                            'The paraphrased versiont for the text input.',
+                    },
+                },
+            },
+            required: [],
+        },
+    },
+
+    PARAPHRASE_EXPAND: {
+        name: 'paraphrase',
+        description:
+            'Given an English input text, You are tasked with providing several paraphrased versions of the input text. The paraphrased version must be twice as long as the original one',
+        parameters: {
+            type: 'object',
+            properties: {
+                text: {
+                    type: 'string',
+                    description: 'The provided text input',
+                },
+                versions: {
+                    type: 'array',
+                    description:
+                        'An array of paraphrased versions for the text input. The length of array should be greater than 2',
                     items: {
                         type: 'string',
                         description:
@@ -168,7 +194,7 @@ class OpenAIService {
         const messages = [
             {
                 role: 'system',
-                content: `Given an English input text, You are tasked with providing several paraphrased versions of the input text, ensuring that the paraphrased version is ${len} than the original.`,
+                content: `Given an English input text, You are tasked with providing several paraphrased versions of the input text, ensuring that the paraphrased version is ${len} than the original one.`,
             },
             {
                 role: 'user',
@@ -180,9 +206,14 @@ class OpenAIService {
         const FunctionCalling = [
             {
                 type: 'function',
-                function: FUNCTION_CALLING.PARAPHRASE,
+                function:
+                    len == 'shorter'
+                        ? FUNCTION_CALLING.PARAPHRASE_NARROW
+                        : FUNCTION_CALLING.PARAPHRASE_EXPAND,
             },
         ];
+
+        console.log(FunctionCalling);
 
         /* Request configuration */
         const requestConfiguration = {
