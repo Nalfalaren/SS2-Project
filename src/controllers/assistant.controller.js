@@ -130,6 +130,8 @@ class AssistantController {
             text: req.body.text,
         });
 
+        console.log('output::', output);
+
         res.status(200).json({
             status: 200,
             code: OPENAI_PARAPHRASE_SUCCESS,

@@ -1,6 +1,7 @@
 'use strict';
 const { Sequelize } = require('sequelize');
 const getConfig = require('../config');
+const path = require('path');
 
 /* Get configs */
 const config = getConfig('dev');
@@ -13,15 +14,10 @@ class DBConnector {
         }
 
         /* Create instance */
-        DBConnector.instance = new Sequelize(
-            config.database.name,
-            config.database.user,
-            config.database.password,
-            {
-                host: config.database.host,
-                dialect: config.database.dialect,
-            }
-        );
+        DBConnector.instance = new Sequelize({
+            dialect: 'sqlite',
+            storage: path.join(__dirname, 'app.db'),
+        });
     }
 
     static connect() {

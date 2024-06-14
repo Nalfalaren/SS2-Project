@@ -21,6 +21,7 @@
     "openai": "^4.47.3",
     "puppeteer": "^22.10.0",
     "sequelize": "^6.37.2",
+    "sqlite3": "^5.1.7",
     "string-similarity": "^4.0.4"
   }
 }
