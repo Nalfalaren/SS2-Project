@@ -21,7 +21,10 @@ class AuthController {
 
         res.cookie('access-token', accessToken);
         res.cookie('refresh-token', refreshToken);
-        res.cookie('user-id', user.id);
+        res.cookie('user-id', user?.id);
+        res.cookie('user-name', user?.name);
+        res.cookie('user-avatar', user?.avatar_url);
+        res.cookie('user-email', user?.email);
 
         res.redirect('http://localhost:6868/home');
     }
